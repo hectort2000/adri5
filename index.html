@@ -56,9 +56,7 @@ src="https://www.facebook.com/tr?id=1760296025370199&ev=PageView&noscript=1"
         height: 300px;
         background: url('logoverificadoblancoyverde.png') no-repeat center center;
         background-size: contain;
-        background-repeat: no-repeat;
-        background-position: center;
-        margin: 0em auto;
+        margin: 0 auto;
         display: block;
         transition: transform 0.3s ease, box-shadow 0.3s ease;
       }
@@ -68,13 +66,11 @@ src="https://www.facebook.com/tr?id=1760296025370199&ev=PageView&noscript=1"
       }
       h1 {
         font-size: 1.8em;
-        margin-top: 0;
-        margin-bottom: 0em;
+        margin: 0 0 0.5em;
       }
       h2 {
-        color: white;
-        margin-top: 0;
         font-size: 1em;
+        margin: 0;
       }
       .cta {
         margin-top: 1.5em;
@@ -136,7 +132,6 @@ src="https://www.facebook.com/tr?id=1760296025370199&ev=PageView&noscript=1"
         position: fixed;
         top: 10px;
         left: 10px;
-        width: auto;
         background-color: rgba(255,255,255,0.3);
         border: 1px solid #ffffff55;
         color: white;
@@ -155,14 +150,8 @@ src="https://www.facebook.com/tr?id=1760296025370199&ev=PageView&noscript=1"
         transform: translateX(0);
       }
       @media (max-width: 600px) {
-        h1 {
-          font-size: 1.4em;
-          padding: 0 1em;
-        }
-        h2 {
-          font-size: 1em;
-          padding: 0 1em;
-        }
+        h1 { font-size: 1.4em; padding: 0 1em; }
+        h2 { font-size: 1em; padding: 0 1em; }
         .cta-button {
           font-size: 1em;
           padding: 0.8em 1.2em;
@@ -182,9 +171,7 @@ src="https://www.facebook.com/tr?id=1760296025370199&ev=PageView&noscript=1"
           font-size: 0.9em;
           text-align: center;
         }
-        .footer-item {
-          justify-content: center;
-        }
+        .footer-item { justify-content: center; }
       }
     </style>
   </head>
@@ -195,12 +182,17 @@ src="https://www.facebook.com/tr?id=1760296025370199&ev=PageView&noscript=1"
       <h1>¡UNITE A LOS QUE YA ESTÁN GANANDO!</h1>
       <h2>👇🏽 Contáctanos tocando el botón 👇🏽</h2>
       <div class="cta">
-        <a id="whatsapp-btn"
+        <a
+          id="whatsapp-btn"
           href="#"
           class="cta-button"
           target="_blank"
-          rel="noopener noreferrer">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="whatsapp" />
+          rel="noopener noreferrer"
+        >
+          <img
+            src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg"
+            alt="whatsapp"
+          />
           JUGAR!
         </a>
       </div>
@@ -227,6 +219,7 @@ src="https://www.facebook.com/tr?id=1760296025370199&ev=PageView&noscript=1"
     <div class="notif" id="notifBox"></div>
 
     <script>
+      // NOTIFICACIONES rotativas
       const mensajes = [
         "Carla: Super confiable, me abonaron al instante",
         "Juan: Recomiendo, son gente de confianza",
@@ -243,10 +236,8 @@ src="https://www.facebook.com/tr?id=1760296025370199&ev=PageView&noscript=1"
         "Fede: El mejor servicio de todos",
         "Flor: Siempre activos, confiables"
       ];
-
       let current = 0;
       const notif = document.getElementById('notifBox');
-
       function mostrarNotificacion() {
         notif.classList.remove('visible');
         setTimeout(() => {
@@ -255,36 +246,63 @@ src="https://www.facebook.com/tr?id=1760296025370199&ev=PageView&noscript=1"
           current = (current + 1) % mensajes.length;
         }, 500);
       }
-
       mostrarNotificacion();
       setInterval(mostrarNotificacion, 2500);
+    </script>
 
-      // Rotación secuencial de WhatsApp
-      const numerosWhatsapp = [
-        "5493562571938",
-        "5493562571175",
-        "5493562553164"
-      ];
+    <script>
+      // ROTACIÓN ALEATORIA SIN REPETICIONES de WhatsApp
+      (function () {
+        const numerosWhatsapp = [
+          "54912",
+          "5491688",
+          "549115770",
+          "549114433"
+        ];
+        const mensaje =
+          "Hola, quisiera un usuario y quiero cargar para tener mi bono de BIENVENIDA SOLO POR HOY";
 
-      const mensaje = "Hola, quisiera un usuario y quiero cargar para tener mi bono de BIENVENIDA SOLO POR HOY";
+        // Fisher–Yates shuffle
+        function shuffleArray(arr) {
+          for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+          }
+        }
 
-      function obtenerIndiceActual() {
-        let index = localStorage.getItem('wa_index');
-        return index ? parseInt(index) : 0;
-      }
+        // Inicializa o reinicia la secuencia
+        function initSequence() {
+          sequence = [...numerosWhatsapp];
+          shuffleArray(sequence);
 
-      function guardarSiguienteIndice(index) {
-        const siguiente = (index + 1) % numerosWhatsapp.length;
-        localStorage.setItem('wa_index', siguiente);
-      }
+          // Evitar que el primero sea igual al último usado
+          const lastUsed = localStorage.getItem("wa_last");
+          if (lastUsed && sequence[0] === lastUsed) {
+            do { shuffleArray(sequence); }
+            while (sequence[0] === lastUsed);
+          }
 
-      document.getElementById('whatsapp-btn').addEventListener('click', function (e) {
-        const index = obtenerIndiceActual();
-        const numero = numerosWhatsapp[index];
-        const url = `https://wa.me/${numero}?text=${encodeURIComponent(mensaje)}`;
-        this.href = url;
-        guardarSiguienteIndice(index);
-      });
+          localStorage.setItem("wa_sequence", JSON.stringify(sequence));
+          index = 0;
+          localStorage.setItem("wa_seq_index", index);
+        }
+
+        // Cargar secuencia e índice
+        let sequence = JSON.parse(localStorage.getItem("wa_sequence") || "[]");
+        let index = parseInt(localStorage.getItem("wa_seq_index"), 10) || 0;
+        if (!sequence.length) initSequence();
+
+        document
+          .getElementById("whatsapp-btn")
+          .addEventListener("click", function () {
+            if (index >= sequence.length) initSequence();
+            const numero = sequence[index];
+            this.href = https://wa.me/${numero}?text=${encodeURIComponent(mensaje)};
+            localStorage.setItem("wa_last", numero);
+            index++;
+            localStorage.setItem("wa_seq_index", index);
+          });
+      })();
     </script>
   </body>
 </html>
